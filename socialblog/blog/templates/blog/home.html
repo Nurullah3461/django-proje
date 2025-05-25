@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Social Blog Ana Sayfa</title>
+</head>
+<body>
+    <h1>Hoşgeldiniz Social Blog'a</h1>
+
+    {% if user.is_authenticated %}
+        Merhaba, {{ user.username }}! | <a href="{% url 'profile' %}">Profil</a> | <a href="{% url 'logout' %}">Çıkış</a>
+    {% else %}
+        <a href="{% url 'login' %}">Giriş Yap</a> | <a href="{% url 'register' %}">Kayıt Ol</a>
+    {% endif %}
+
+</body>
+</html>
