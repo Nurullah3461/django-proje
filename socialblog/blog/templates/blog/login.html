@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Giriş Yap</title>
-</head>
-<body>
+{% extends 'blog/base.html' %}
+
+{% block content %}
     <h2>Giriş Yap</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Giriş Yap</button>
     </form>
-    <a href="{% url 'register' %}">Kayıt Ol</a>
-</body>
-</html>
+    <p><a href="{% url 'register' %}">Kayıt Ol</a></p>
+{% endblock %}
