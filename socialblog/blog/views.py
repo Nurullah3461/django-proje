@@ -9,6 +9,8 @@ from django.shortcuts import redirect
 from django.db import IntegrityError, transaction
 from .models import ChatMessage
 from .forms import ChatForm
+from django.shortcuts import render
+
 
 # Ana sayfa
 def home(request):
@@ -65,12 +67,22 @@ def profile(request):
     user_posts = Post.objects.filter(author=request.user)  # Bu kullanıcının postlarını al
     post_count = user_posts.count()  # Kaç postu var
     total_score = Like.objects.filter(post__author=request.user).aggregate(total=Sum('vote'))['total'] or 0
+    user = request.user
+    likes_count = Like.objects.filter(user=user, vote=1).count()
+    dislikes_count = Like.objects.filter(user=user, vote=-1).count()
+    posts = Post.objects.filter(author=request.user)
 
-    return render(request, 'blog/profile.html', {
+    context = {
+        'user': user,
         'user_posts': user_posts,
         'post_count': post_count,
         'total_score': total_score,
-    })
+        'likes_count': likes_count,
+        'dislikes_count': dislikes_count,
+        'posts': posts,  # <== Burası önemli
+    }
+
+    return render(request, 'blog/profile.html', context)
 
 # Post detay sayfası - yorum ve beğeni özellikleri ile
 def post_detail(request, pk):

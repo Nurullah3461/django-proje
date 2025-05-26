@@ -1,22 +1,30 @@
+<!-- blog/templates/blog/profile.html -->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ user.username }} Profil</title>
+    <title>Profil - {{ user.username }}</title>
 </head>
 <body>
-    <h1>{{ user.username }}'in Profili</h1>
+    <h1>Profil Sayfası</h1>
 
-    <p>Toplam Gönderi: {{ post_count }}</p>
-    <p>Toplam Beğeni Puanı: {{ total_score }}</p>
+    <p><strong>Kullanıcı Adı:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Katılma Tarihi:</strong> {{ user.date_joined|date:"d M Y" }}</p>
+    <p><strong>Toplam Beğeni:</strong> {{ likes_count }}</p>
+    <p><strong>Toplam Beğenmeme:</strong> {{ dislikes_count }}</p>
 
-    <h3>Gönderilerim</h3>
-    <ul>
-        {% for post in user_posts %}
-            <li><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a> ({{ post.created_at|date:"d M Y" }})</li>
-        {% empty %}
-            <li>Henüz gönderiniz yok.</li>
-        {% endfor %}
-    </ul>
+    <hr>
+
+    <h2>Gönderilerim</h2>
+    {% for post in posts %}
+        <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+            <h3><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h3>
+            <p>{{ post.created_at|date:"d M Y H:i" }}</p>
+            <p>{{ post.content|truncatechars:100 }}</p>
+        </div>
+    {% empty %}
+        <p>Henüz gönderiniz yok.</p>
+    {% endfor %}
 
     <p><a href="{% url 'home' %}">Ana Sayfaya Dön</a></p>
 </body>
