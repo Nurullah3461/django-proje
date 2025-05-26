@@ -6,11 +6,30 @@
 <body>
     <h1>Hoşgeldiniz Social Blog'a</h1>
 
-    {% if user.is_authenticated %}
-        Merhaba, {{ user.username }}! | <a href="{% url 'profile' %}">Profil</a> | <a href="{% url 'logout' %}">Çıkış</a>
+     {% if user.is_authenticated %}
+        Merhaba, {{ user.username }}! | 
+        <a href="{% url 'profile' %}">Profil</a> | 
+        <a href="{% url 'logout' %}">Çıkış</a> | 
+        <a href="{% url 'post_create' %}">Yeni Gönderi Ekle</a>
     {% else %}
-        <a href="{% url 'login' %}">Giriş Yap</a> | <a href="{% url 'register' %}">Kayıt Ol</a>
+        <a href="{% url 'login' %}">Giriş Yap</a> | 
+        <a href="{% url 'register' %}">Kayıt Ol</a>
     {% endif %}
+
+    <hr>
+
+    {% for post in posts %}
+        <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+            <h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
+            <p>Yazar: {{ post.author.username }} | {{ post.created_at|date:"d M Y H:i" }}</p>
+            <p>{{ post.content|truncatechars:150 }}</p>
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="Post resmi" width="200px">
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>Henüz hiç gönderi yok.</p>
+    {% endfor %}
 
 </body>
 </html>

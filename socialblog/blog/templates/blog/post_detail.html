@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ post.title }}</title>
+</head>
+<body>
+    <h1>{{ post.title }}</h1>
+    <p>Yazar: {{ post.author.username }}</p>
+    <p>{{ post.created_at|date:"d M Y H:i" }}</p>
+
+    {% if post.image %}
+        <img src="{{ post.image.url }}" alt="Post resmi" width="400px">
+    {% endif %}
+
+    <p>{{ post.content }}</p>
+
+    <a href="{% url 'home' %}">Ana Sayfaya Dön</a>
+</body>
+</html>
