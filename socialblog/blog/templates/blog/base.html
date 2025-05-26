@@ -3,24 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Sosyal Blog{% endblock %}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            text-align: center;
-        }
-        nav a {
-            color: white;
-            margin: 0 10px;
-        }
-    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
 </head>
 <body>
     <header>
