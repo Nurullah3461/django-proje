@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Profil</title>
+    <title>{{ user.username }} Profil</title>
 </head>
 <body>
-    <h2>{{ user.username }} Profili</h2>
-    <p>Email: {{ user.email }}</p>
-    <a href="{% url 'home' %}">Ana Sayfa</a>
+    <h1>{{ user.username }}'in Profili</h1>
+
+    <p>Toplam Gönderi: {{ post_count }}</p>
+    <p>Toplam Beğeni Puanı: {{ total_score }}</p>
+
+    <h3>Gönderilerim</h3>
+    <ul>
+        {% for post in user_posts %}
+            <li><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a> ({{ post.created_at|date:"d M Y" }})</li>
+        {% empty %}
+            <li>Henüz gönderiniz yok.</li>
+        {% endfor %}
+    </ul>
+
+    <p><a href="{% url 'home' %}">Ana Sayfaya Dön</a></p>
 </body>
 </html>

@@ -4,9 +4,9 @@
     <title>Social Blog Ana Sayfa</title>
 </head>
 <body>
-    <h1>Hoşgeldiniz Social Blog'a</h1>
+    <h1>Social Blog Ana Sayfa</h1>
 
-     {% if user.is_authenticated %}
+    {% if user.is_authenticated %}
         Merhaba, {{ user.username }}! | 
         <a href="{% url 'profile' %}">Profil</a> | 
         <a href="{% url 'logout' %}">Çıkış</a> | 
@@ -18,15 +18,13 @@
 
     <hr>
 
+    <h2>Gönderiler</h2>
+
     {% for post in posts %}
         <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
             <h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
             <p>Yazar: {{ post.author.username }} | {{ post.created_at|date:"d M Y H:i" }}</p>
             <p>{{ post.content|truncatechars:150 }}</p>
-            <p>
-        <a href="{% url 'like_post' post.pk 'like' %}" style="color: {% if user_vote == 1 %}green{% else %}black{% endif %};">👍 Beğen</a> |
-        <a href="{% url 'like_post' post.pk 'dislike' %}" style="color: {% if user_vote == -1 %}red{% else %}black{% endif %};">👎 Beğenme</a>
-        </p>
             {% if post.image %}
                 <img src="{{ post.image.url }}" alt="Post resmi" width="200px">
             {% endif %}
@@ -34,6 +32,29 @@
     {% empty %}
         <p>Henüz hiç gönderi yok.</p>
     {% endfor %}
+
+    <hr>
+
+    <h2>Canlı Chat</h2>
+
+    {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            {{ chat_form.as_p }}
+            <button type="submit" name="chat_submit">Mesaj Gönder</button>
+        </form>
+    {% else %}
+        <p>Chat için <a href="{% url 'login' %}">giriş yap</a>!</p>
+    {% endif %}
+
+    <h3>Son Mesajlar</h3>
+    <div style="border:1px solid #ddd; padding:10px; height:300px; overflow-y:scroll; background:#f9f9f9;">
+        {% for chat in chats %}
+            <p><b>{{ chat.user.username }}</b>: {{ chat.message }} <small>({{ chat.timestamp|date:"d M Y H:i" }})</small></p>
+        {% empty %}
+            <p>Henüz mesaj yok.</p>
+        {% endfor %}
+    </div>
 
 </body>
 </html>

@@ -7,11 +7,27 @@ from django import forms
 from django.db.models import Sum
 from django.shortcuts import redirect
 from django.db import IntegrityError, transaction
+from .models import ChatMessage
+from .forms import ChatForm
 
 # Ana sayfa
 def home(request):
     posts = Post.objects.all().order_by('-created_at')
-    return render(request, 'blog/home.html', {'posts': posts})
+    chats = ChatMessage.objects.all().order_by('-timestamp')[:20]
+
+    if request.method == 'POST' and 'chat_submit' in request.POST:
+        if request.user.is_authenticated:
+            chat_form = ChatForm(request.POST)
+            if chat_form.is_valid():
+                chat = chat_form.save(commit=False)
+                chat.user = request.user
+                chat.save()
+                return redirect('home')
+        else:
+            return redirect('login')
+    else:
+        chat_form = ChatForm()
+    return render(request, 'blog/home.html', {'posts': posts, 'chat_form': chat_form, 'chats': chats})
 
 # Kayıt olma
 def register(request):
@@ -46,7 +62,15 @@ def logout_view(request):
 # Profil sayfası
 @login_required
 def profile(request):
-    return render(request, 'blog/profile.html')
+    user_posts = Post.objects.filter(author=request.user)  # Bu kullanıcının postlarını al
+    post_count = user_posts.count()  # Kaç postu var
+    total_score = Like.objects.filter(post__author=request.user).aggregate(total=Sum('vote'))['total'] or 0
+
+    return render(request, 'blog/profile.html', {
+        'user_posts': user_posts,
+        'post_count': post_count,
+        'total_score': total_score,
+    })
 
 # Post detay sayfası - yorum ve beğeni özellikleri ile
 def post_detail(request, pk):
@@ -131,3 +155,14 @@ class CommentForm(forms.ModelForm):
         widgets = {
             'content': forms.Textarea(attrs={'rows':3, 'placeholder':'Yorumunuzu yazın...'})
         }
+
+@login_required
+def chat_room(request):
+    messages = ChatMessage.objects.all().order_by('-timestamp')[:30][::-1]  # Son 30 mesajı al, en son gelen üstte
+    if request.method == 'POST':
+        msg = request.POST.get('message')
+        if msg:
+            ChatMessage.objects.create(user=request.user, message=msg)
+            return redirect('chat_room')
+
+    return render(request, 'blog/chat_room.html', {'messages': messages})
