@@ -1,3 +1,6 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,8 +20,13 @@
         width: 100%;
         resize: vertical;
     }
-</style>
-
+    .button-like {
+        color: green;
+    }
+    .button-dislike {
+        color: red;
+    }
+    </style>
 </head>
 <body>
     <h1>{{ post.title }}</h1>
@@ -46,14 +54,16 @@
 
     <h3>Yorumlar ({{ comments.count }})</h3>
 
-    {% for comment in comments %}
-        <div style="border-bottom:1px solid #ddd; margin-bottom:10px;">
-            <b>{{ comment.user.username }}</b> - <small>{{ comment.created_at|date:"d M Y H:i" }}</small>
-            <p>{{ comment.content }}</p>
-        </div>
-    {% empty %}
+    {% if comments %}
+        {% for comment in comments %}
+            <div style="border-bottom:1px solid #ddd; margin-bottom:10px;">
+                <b>{{ comment.user.username }}</b> - <small>{{ comment.created_at|date:"d M Y H:i" }}</small>
+                <p>{{ comment.content }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
         <p>Henüz yorum yok.</p>
-    {% endfor %}
+    {% endif %}
 
     {% if user.is_authenticated %}
         <h4>Yorum Yaz</h4>
@@ -67,3 +77,4 @@
     <p><a href="{% url 'home' %}">Ana Sayfaya Dön</a></p>
 </body>
 </html>
+{% endblock %}

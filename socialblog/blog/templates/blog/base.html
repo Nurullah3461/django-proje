@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Sosyal Blog{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="{% url 'home' %}" style="color:white; text-decoration:none;">Sosyal Blog</a></h1>
+        <nav>
+            {% if user.is_authenticated %}
+                Merhaba, {{ user.username }} | <a href="{% url 'logout' %}">Çıkış Yap</a>
+            {% else %}
+                <a href="{% url 'login' %}">Giriş</a> | <a href="{% url 'signup' %}">Kayıt Ol</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- İçerik buraya gelecek -->
+        {% endblock %}
+    </main>
+
+</body>
+</html>
